@@ -9,8 +9,8 @@ from matplotlib import rc_file
 rc_file('/Users/jselsing/Pythonlibs/plotting/matplotlibstyle.rc')
 import matplotlib.pylab as pl
 import seaborn as sns; sns.set_style('ticks')
-# cmap = sns.cubehelix_palette(n_colors=6, start=0.0, rot=1.5, gamma=1.0, hue=1.0, light=0.85, dark=0.15, reverse=True, as_cmap=False)
-cmap = sns.color_palette("cubehelix", 7)
+cmap = sns.cubehelix_palette(n_colors=7, start=0.0, rot=1.5, gamma=1.0, hue=1.0, light=0.85, dark=0.15, reverse=True, as_cmap=False)
+# cmap = sns.color_palette("cubehelix", 7)
 
 from util import synth_mag
 
@@ -28,12 +28,12 @@ def main():
 	bands = ['u', 'g', 'r', 'i', 'z', 'Z2', 'Y', 'J', 'H', 'K']
 
 
-	AV = -1 * np.array([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 2.0])
+	AV = -1 * np.array([0.0, 0.4, 0.8, 1.2, 1.6, 2.0])
 	# EBV = AV
 	# colors = 
 	fig, ax = pl.subplots()
 
-	for av in AV:
+	for c, av in enumerate(AV):
 		# print(ebv)
 		mags = collections.defaultdict(list)
 		#Loop through redshifts
@@ -64,9 +64,11 @@ def main():
 		# print('g - J:', gJ)
 
 		#Make the plot
-		sca = ax.scatter(JK, gr, c=dz)
-		ax.plot(JK, gr, label= r'Track for: A$_{V}$ = '+str(av))	
-	ax.set_xlim((-1.0, 1.0))
+		ax.plot(JK, gr, color=cmap[c], label= r'Track for: A$_{V}$ = '+str(av), lw=2.0, zorder=1)	
+		sca = ax.scatter(JK, gr, c=dz, zorder=2, alpha=0.5)
+		print(r'Plotted track for: A$_{V}$ = '+str(av))
+
+	ax.set_xlim((-1.0, 1.5))
 	ax.set_ylim((-1.0, 2.0))
 	cbar = fig.colorbar(sca, ax=ax)
 	ax.set_xlabel('J - K')

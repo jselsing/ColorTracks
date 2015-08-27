@@ -34,7 +34,7 @@ def synth_mag(band=None, datapath=None, wave=None, flux=None):
     filt_new =  common_wavelength(wl_filt, wave, filt, fill_value=0.0)
     prod = filt_new * flux
     numerator = np.sum(prod * wave)
-    denom = np.sum(filt_new * (3e18/wave))
+    denom = 3e18 * np.sum(filt_new/wave)
     f_nu = numerator / denom
     i_band_mag = -2.5 * np.log10(f_nu) - 48.6
     return i_band_mag
