@@ -25,15 +25,20 @@ def synth_mag(band=None, datapath=None, wave=None, flux=None):
     from astropy.cosmology import Planck13 as cosmo
     from gen_methods import medfilt
 
+    #Read file
     filter = glob.glob(datapath+band+'.dat')[0]
     filter = np.genfromtxt(filter)
-    wl_filt = np.array(filter[:,0])
-    if np.mean(wl_filt) < 10:
-        wl_filt *= 10000.0
-    filt = filter[:,1]
-    filt_new =  common_wavelength(wl_filt, wave, filt, fill_value=0.0)
-    prod = filt_new * flux
-    numerator = np.sum(prod * wave)
+    filter_wave = np.array(filter[:,0])
+    filter_throughput = filter[:,1]
+
+    #Convert micron to Angstrom
+    if np.mean(filter_wave) < 10:
+        filter_wave *= 10000.0
+    #Interpolate filter to same sampling as target spectrum
+    filt_new =  common_wavelength(filter_wave, filter_throughput, wave, fill_value=0.0)
+
+    #Calculate AB magnitude
+    numerator = np.sum(filt_new * flux * wave)
     denom = 3e18 * np.sum(filt_new/wave)
     f_nu = numerator / denom
     i_band_mag = -2.5 * np.log10(f_nu) - 48.6
@@ -41,7 +46,7 @@ def synth_mag(band=None, datapath=None, wave=None, flux=None):
 
 
 
-def common_wavelength(wlarr_old, wlarr_new, fluxarr_old, fill_value = 0.):
+def common_wavelength(wlarr_old, fluxarr_old, wlarr_new, fill_value = 0.):
     """
 	Function to interpolate flux arrays onto new grid.
 

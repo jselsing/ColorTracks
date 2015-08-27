@@ -34,8 +34,8 @@ def main():
 	fig, ax = pl.subplots()
 
 	for c, av in enumerate(AV):
-		# print(ebv)
 		mags = collections.defaultdict(list)
+
 		#Loop through redshifts
 		for i in dz:
 			wl_z = wl * (1+i)
