@@ -1,5 +1,6 @@
 """
 Main script to generate the color-color tracks
+Conversion between AB and VEGA in UKIDDS is taken from Hewett et al. 2006
 """
 #Import all the stuff!!!
 import numpy as np
@@ -52,8 +53,8 @@ def main():
 
 
 		#Calculate colors
-		JK = np.array(mags['J']) - np.array(mags['K'])
-		gJ =  np.array(mags['g']) - np.array(mags['J'])
+		JK = (np.array(mags['J']) - 0.938) - (np.array(mags['K']) - 1.900)
+		gJ =  np.array(mags['g']) - (np.array(mags['J']) - 0.938)
 		gr = np.array(mags['g']) - np.array(mags['r'])
 
 
@@ -64,7 +65,7 @@ def main():
 		# print('g - J:', gJ)
 
 		#Make the plot
-		ax.plot(JK, gr, color=cmap[c], label= r'Track for: A$_{V}$ = '+str(av), lw=2.0, zorder=1)	
+		ax.plot(JK, gr, color=cmap[c], label= r'A$_{V}$ = '+str(av), lw=2.0, zorder=1)	
 		sca = ax.scatter(JK, gr, c=dz, zorder=2, alpha=0.5)
 		print(r'Plotted track for: A$_{V}$ = '+str(av))
 
