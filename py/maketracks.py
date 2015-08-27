@@ -1,6 +1,5 @@
 """
 Main script to generate the color-color tracks
-Conversion between AB and VEGA in UKIDDS is taken from Hewett et al. 2006
 """
 #Import all the stuff!!!
 import numpy as np
@@ -40,11 +39,11 @@ def main():
 		#Loop through redshifts
 		for i in dz:
 			wl_z = wl * (1+i)
-			wl_z = wl_z[np.where(wl_z < 60000)]
-			flux_z = (flux / (1+i))[np.where(wl_z < 60000)]
-			error_z = (error / (1+i))[np.where(wl_z < 60000)]
-			flux_z =  flux_z * reddening(wl_z* u.angstrom, a_v=av, r_v=3.1, model='fm07')
-			error_z = error_z * reddening(wl_z* u.angstrom, a_v=av, r_v=3.1, model='fm07')
+			wl_z = wl_z[np.where(wl_z < 33000)]
+			flux_z = (flux / (1+i))[np.where(wl_z < 33000)]
+			error_z = (error / (1+i))[np.where(wl_z < 33000)]
+			flux_z =  flux_z * reddening(wl_z* u.angstrom, av, r_v=2.72, model='gcc09')
+			error_z = error_z * reddening(wl_z* u.angstrom, av, r_v=2.72, model='gcc09')
 
 			#Loop through bands
 			for k in bands:
@@ -53,8 +52,8 @@ def main():
 
 
 		#Calculate colors
-		JK = (np.array(mags['J']) - 0.938) - (np.array(mags['K']) - 1.900)
-		gJ =  np.array(mags['g']) - (np.array(mags['J']) - 0.938)
+		JK = np.array(mags['J']) - np.array(mags['K'])
+		gJ =  np.array(mags['g']) - np.array(mags['J'])
 		gr = np.array(mags['g']) - np.array(mags['r'])
 
 
@@ -69,13 +68,13 @@ def main():
 		sca = ax.scatter(JK, gr, c=dz, zorder=2, alpha=0.5)
 		print(r'Plotted track for: A$_{V}$ = '+str(av))
 
-	ax.set_xlim((-1.0, 1.5))
+	ax.set_xlim((-1.0, 1.0))
 	ax.set_ylim((-1.0, 2.0))
 	cbar = fig.colorbar(sca, ax=ax)
 	ax.set_xlabel('J - K')
 	ax.set_ylabel('g - r')
 	cbar.set_label('z')
-	pl.legend()
+	pl.legend(loc=2)
 	pl.savefig('../figs/color_track_JKgr.pdf')
 	pl.show()
 
